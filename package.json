@@ -1,0 +1,33 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@nuxt/ui": "^3.1.1",
+    "@nuxtjs/supabase": "^1.5.0",
+    "@tailwindcss/vite": "^4.1.5",
+    "@vueuse/nuxt": "^13.1.0",
+    "nuxt": "^3.17.1",
+    "nuxt-auth-utils": "^0.5.20",
+    "tailwindcss": "^4.1.5",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.3",
+    "@vitest/ui": "^1.2.2",
+    "@vue/test-utils": "^2.4.6",
+    "happy-dom": "^17.4.6",
+    "vitest": "^1.6.1"
+  }
+}
