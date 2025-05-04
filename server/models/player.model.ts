@@ -52,7 +52,6 @@ export class PlayerModel {
     }
 
     makeGuess(guess: Guess, lastBtcPriceId: string): Required<PlayerModel> {
-        console.log(this)
         this.assertPersisted();
         return new PlayerModel(
             this.score,
@@ -68,7 +67,7 @@ export class PlayerModel {
     resolveGuess(isCorrect: boolean): Required<PlayerModel> {
         this.assertPersisted();
         return new PlayerModel(
-            this.score + (isCorrect ? 1 : 0),
+            this.score + (isCorrect ? 1 : -1),
             null,
             null,
             null,

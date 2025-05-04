@@ -96,3 +96,4 @@ There are some options to solve the problem:
 ## Question
 
 - Is the 60 Time for one player or one round?
+- can score be negative?

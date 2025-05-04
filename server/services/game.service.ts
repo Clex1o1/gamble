@@ -1,38 +1,52 @@
-import { PlayerModel } from "../models/player.model";
-import { Guess, Player } from "../types";
-import { PlayerService } from "./player.service";
-import { PriceService } from "./price.service";
+import { GuessTimeNotUpError, NoActiveGuessError, PlayerNotFoundError, PriceDidNotChangeError } from '../errors';
+import { PlayerModel } from '../models/player.model';
+import { Guess } from '../types';
+import { PlayerService } from './player.service';
+import { PriceService } from './price.service';
+
 export interface IGameService {
-    initializePlayer(playerId: string): Promise<Player>;
-    makeGuess(playerId: string, guess: Guess): Promise<Player>;
-    resolveGuess(playerId: string): Promise<Player>;
+    initializePlayer(playerId: string): Promise<PlayerModel>;
+    makeGuess(playerId: string, guess: Guess): Promise<PlayerModel>;
+    resolveGuess(playerId: string): Promise<PlayerModel>;
 }
 
 export class GameService implements IGameService {
-    private readonly guessTime = process.env.GUESS_RESOLVE_SECONDS ? parseInt(process.env.GUESS_RESOLVE_SECONDS) * 1000 : 60 * 1000;
-    constructor(private readonly playerService: PlayerService, private readonly priceService: PriceService) {
+    private readonly guessTime: number;
+
+    constructor(
+        private readonly playerService: PlayerService,
+        private readonly priceService: PriceService,
+    ) {
+        this.guessTime = (Number(process.env.GUESS_RESOLVE_SECONDS) ?? 60) * 1000;
     }
 
-    async initializePlayer(playerId: string): Promise<Player> {
+    async initializePlayer(playerId: string): Promise<PlayerModel> {
         return this.playerService.initializePlayer(playerId);
     }
 
-    async makeGuess(playerId: string, guess: Guess): Promise<Player> {
+    async makeGuess(playerId: string, guess: Guess): Promise<PlayerModel> {
         return this.playerService.makeGuess(playerId, guess);
     }
-    async resolveGuess(playerId: string): Promise<Player> {
+
+
+    async resolveGuess(playerId: string): Promise<PlayerModel> {
         const player: Required<PlayerModel> = await this.playerService.getPlayer(playerId);
         player.assertHasGuess();
+
 
         if (
             !(player.lastGuessTime !== null &&
                 Date.now() - player.lastGuessTime >= this.guessTime)
         ) {
-            throw new Error('Guess time is not up');
+            throw new GuessTimeNotUpError();
         }
         const btcPrice = await this.priceService.getBtcPrice();
         const lastBtcPrice = await this.priceService.getPriceById(player.lastBtcPriceId);
-        const isCorrect = player.guess === 'up' ? btcPrice > lastBtcPrice : btcPrice < lastBtcPrice;
+
+        if (btcPrice.price === lastBtcPrice.price) {
+            throw new PriceDidNotChangeError();
+        }
+        const isCorrect = player.guess === 'up' ? btcPrice.price > lastBtcPrice.price : btcPrice.price < lastBtcPrice.price;
         return this.playerService.resolveGuess(playerId, isCorrect);
     }
 }
