@@ -1,4 +1,4 @@
-import { PlayerAlreadyHasAGuessError } from "../errors";
+import { PlayerAlreadyHasAGuessError, PlayerNotFoundError } from "../errors";
 import { PlayerModel } from "../models/player.model";
 import { PlayerRepository } from "../repositories/player.repository";
 import { Guess, Player } from "../types";
@@ -27,11 +27,17 @@ export class PlayerService implements IPlayerService {
 
     async getPlayer(playerId: string): Promise<Required<PlayerModel>> {
         const player = await this.playerRepository.getPlayer(playerId);
+        if (!player) {
+            throw new PlayerNotFoundError(playerId);
+        }
         return player;
     }
 
     async makeGuess(playerId: string, guess: Guess): Promise<Required<PlayerModel>> {
         let player = await this.playerRepository.getPlayer(playerId);
+        if (!player) {
+            throw new PlayerNotFoundError(playerId);
+        }
         if (player.guess) {
             throw new PlayerAlreadyHasAGuessError();
         }
@@ -43,6 +49,9 @@ export class PlayerService implements IPlayerService {
 
     async resolveGuess(playerId: string, isCorrect: boolean): Promise<Required<PlayerModel>> {
         let player = await this.playerRepository.getPlayer(playerId);
+        if (!player) {
+            throw new PlayerNotFoundError(playerId);
+        }
         player = player.resolveGuess(isCorrect);
         player = await this.playerRepository.updatePlayer(player);
         return player;

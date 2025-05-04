@@ -84,7 +84,14 @@ Check out the [deployment documentation](https://nuxt.com/docs/getting-started/d
 2. Install Tailwind CSS and UI - for styling. since nuxt ui depends on tailwind i can use both to style my project
 3. Install Supabase - for database, authentication (provides anon users) and realtime updates. I choosed this over AWS since i'm most familiar with it
 4. Install VueUse - usefull composables for cookie handling e.g.
-5. Install Nuxt Auth - for authentication. ???
+5. Install Vitest - for testing
+6. Translate requirements into tests
+7. Implement the code to fullfill the tests
+8. Start with the integration tests for the game
+9. TDD, SOLID, DRY and DDD principles + Repository Pattern
+10. Satisfy tests and implement the main services into server routes
+11. Create Supabase Project with tables RLS
+12. Implement the client side code and UI
 
 ## Conceptions
 
@@ -96,4 +103,16 @@ There are some options to solve the problem:
 ## Question
 
 - Is the 60 Time for one player or one round?
+- - the guess is resolved after 60 seconds AND the price is updated?
+- - - what happens if the price is not updated?
+
+---
+
 - can score be negative?
+
+## TODOs
+
+- add unit tests
+- add migrations
+- rate limting external api
+- login

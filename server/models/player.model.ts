@@ -88,6 +88,16 @@ export class PlayerModel {
             updatedAt: this.updatedAt,
         };
     }
+
+    toEntity() {
+        return {
+            id: this.id,
+            score: this.score,
+            guess: this.guess,
+            last_guess_time: this.lastGuessTime,
+            last_price_id: this.lastBtcPriceId,
+        };
+    }
     assertPersisted(): asserts this is Required<PlayerModel> {
         if (
             this.id === undefined ||

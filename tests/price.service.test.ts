@@ -9,6 +9,14 @@ describe('Price Service', () => {
     })
     it('should handle API errors gracefully', () => {
     })
+    it('should only update the price if it has changed', () => {
+    })
+    it('should return the price latest if it has not changed', () => {
+    })
+    it('should return the price by id', () => {
+    })
+    it('should return an empty price model if no price is found', () => {
+    })
 })
 
 

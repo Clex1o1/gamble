@@ -1,16 +1,8 @@
-import { createClient } from "@supabase/supabase-js";
 import { initializePriceService } from "../../index";
-
+import { serverSupabaseServiceRole } from '#supabase/server'
 export default defineEventHandler(async (event) => {
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_SERVER_KEY;
-    if (!supabaseUrl || !supabaseKey) {
-        throw createError({
-            statusCode: 500,
-            statusMessage: "Supabase URL or key is not set"
-        })
-    }
-    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    const supabase = serverSupabaseServiceRole(event);
     const priceService = initializePriceService(supabase);
     try {
         const price = await priceService.getBtcPrice();

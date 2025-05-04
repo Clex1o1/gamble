@@ -3,7 +3,6 @@ import { PlayerModel } from '~/server/models/player.model';
 import type { PlayerRepository } from '~/server/repositories/player.repository';
 import { PlayerService } from '~/server/services/player.service'
 import { GameService } from '~/server/services/game.service'
-import { Gues, Player } from '~/server/types'
 import { PriceService } from '~/server/services/price.service';
 import type { PriceRepository } from '~/server/repositories/price.repository';
 import { PriceModel } from '~/server/models/price.model';

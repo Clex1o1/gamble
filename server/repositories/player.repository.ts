@@ -3,18 +3,21 @@ import { PlayerModel } from "~/server/models/player.model";
 
 export class PlayerRepository {
     constructor(private readonly db: SupabaseClient) { }
-    async getPlayer(id: string): Promise<Required<PlayerModel>> {
-        const { data, error } = await this.db.from('players').select('*').eq('id', id).single();
+    async getPlayer(id: string): Promise<Required<PlayerModel> | null> {
+        const { data, error } = await this.db.from('players').select('*').eq('id', id).limit(1);
         if (error) {
             throw new Error(error.message);
         }
-        const persistedPlayer: PlayerModel = PlayerModel.hydrate(data);
+        if (data.length === 0) {
+            return null;
+        }
+        const persistedPlayer: PlayerModel = PlayerModel.hydrate(data[0]);
         persistedPlayer.assertPersisted();
         return persistedPlayer;
     }
 
     async createPlayer(player: PlayerModel): Promise<Required<PlayerModel>> {
-        const { data, error } = await this.db.from('players').insert(player).select().single();
+        const { data, error } = await this.db.from('players').insert(player.toEntity()).select().single();
         if (error) {
             throw new Error(error.message);
         }
@@ -24,7 +27,7 @@ export class PlayerRepository {
     }
 
     async updatePlayer(player: PlayerModel): Promise<Required<PlayerModel>> {
-        const { data, error } = await this.db.from('players').update(player).eq('id', player.id).select().single();
+        const { data, error } = await this.db.from('players').update(player.toEntity()).eq('id', player.id).select().single();
         if (error) {
             throw new Error(error.message);
         }

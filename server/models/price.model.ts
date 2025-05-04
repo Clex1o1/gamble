@@ -43,6 +43,13 @@ export class PriceModel {
         };
     }
 
+    toEntity() {
+        return {
+            id: this.id,
+            price: this.price,
+        };
+    }
+
     assertPersisted(): asserts this is Required<PriceModel> {
         if (
             this.id === undefined ||
