@@ -11,11 +11,12 @@ export class PriceService implements IPriceService {
     }
 
     async getBtcPrice(): Promise<Required<PriceModel>> {
-        const price = await this.apiService.getBtcPrice();
-        let priceModel = await this.priceRepository.getLastPrice();
+        const price = Number(await this.apiService.getBtcPrice());
+        let priceModel: PriceModel = await this.priceRepository.getLastPrice();
         if (await this.didPriceChange(price)) {
             priceModel = await this.priceRepository.savePrice(price);
         }
+        priceModel.assertPersisted();
         return priceModel;
     }
     private async didPriceChange(price: number): Promise<boolean> {

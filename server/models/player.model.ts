@@ -35,19 +35,19 @@ export class PlayerModel {
         id: string;
         score: number;
         guess: Guess | null;
-        lastGuessTime: number | null;
-        lastBtcPriceId: string | null;
-        createdAt: number;
-        updatedAt: number;
+        last_guess_time: number | null;
+        last_btc_price_id: string | null;
+        created_at: number;
+        updated_at: number;
     }): Required<PlayerModel> {
         return new PlayerModel(
             obj.score,
             obj.guess,
-            obj.lastGuessTime,
-            obj.lastBtcPriceId,
+            obj.last_guess_time,
+            obj.last_btc_price_id,
             obj.id,
-            obj.createdAt,
-            obj.updatedAt
+            obj.created_at,
+            obj.updated_at
         ) as Required<PlayerModel>;
     }
 

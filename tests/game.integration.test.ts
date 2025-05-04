@@ -27,18 +27,18 @@ describe('Game Requirements', () => {
         id: 'mock-id',
         score: 0,
         guess: null,
-        lastGuessTime: null,
-        lastBtcPriceId: null,
-        createdAt: now,
-        updatedAt: now,
+        last_guess_time: null,
+        last_btc_price_id: null,
+        created_at: now,
+        updated_at: now,
     });
 
     let currentPrices = new Map<string, PriceModel>();
     currentPrices.set('mock-id', PriceModel.hydrate({
         id: 'mock-id',
         price: 10000,
-        createdAt: now,
-        updatedAt: now,
+        created_at: now,
+        updated_at: now,
     }));
 
     const mockPlayerRepository = {
@@ -48,10 +48,10 @@ describe('Game Requirements', () => {
                 id: player.id ?? 'mock-id',
                 score: player.score,
                 guess: player.guess,
-                lastGuessTime: player.lastGuessTime,
-                lastBtcPriceId: player.lastBtcPriceId,
-                createdAt: now,
-                updatedAt: now,
+                last_guess_time: player.lastGuessTime,
+                last_btc_price_id: player.lastBtcPriceId,
+                created_at: now,
+                updated_at: now,
             });
             return Promise.resolve(currentPlayer);
         }),
@@ -61,10 +61,10 @@ describe('Game Requirements', () => {
                 id: player.id ?? 'mock-id',
                 score: player.score,
                 guess: player.guess,
-                lastGuessTime: player.lastGuessTime,
-                lastBtcPriceId: player.lastBtcPriceId,
-                createdAt: player.createdAt ?? now,
-                updatedAt: now,
+                last_guess_time: player.lastGuessTime,
+                last_btc_price_id: player.lastBtcPriceId,
+                created_at: player.createdAt ?? now,
+                updated_at: now,
             });
             return Promise.resolve(currentPlayer);
         }),
@@ -77,8 +77,8 @@ describe('Game Requirements', () => {
             currentPrices.set(id, PriceModel.hydrate({
                 id,
                 price,
-                createdAt: now,
-                updatedAt: now,
+                created_at: now,
+                updated_at: now,
             }));
             return Promise.resolve(currentPrices.get(id));
         }),
@@ -101,23 +101,23 @@ describe('Game Requirements', () => {
             id: 'mock-id',
             score: 0,
             guess: null,
-            lastGuessTime: null,
-            lastBtcPriceId: null,
-            createdAt: 0,
-            updatedAt: 0
+            last_guess_time: null,
+            last_btc_price_id: null,
+            created_at: 0,
+            updated_at: 0
         });
         currentPrices.clear()
         currentPrices.set('mock-id', PriceModel.hydrate({
             id: 'mock-id',
             price: 10000,
-            createdAt: now,
-            updatedAt: now,
+            created_at: now,
+            updated_at: now,
         }));
         vi.stubEnv('GUESS_RESOLVE_SECONDS', '0');
     });
 
     it('should allow the player to see their current score and the latest available BTC price in USD at all times', async () => {
-        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue(10000);
+        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue('10000');
         let player = await gameService.initializePlayer(playerId);
         expect(player.score).toBe(0);
         let price = await priceService.getBtcPrice();
@@ -139,11 +139,11 @@ describe('Game Requirements', () => {
 
     it('should resolve a guess only when the price changes and at least 60 seconds have passed since the guess was made', async () => {
         vi.stubEnv('GUESS_RESOLVE_SECONDS', '0.1');
-        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue(1000);
+        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue('1000');
         let player = await gameService.initializePlayer(playerId);
         player = await gameService.makeGuess(playerId, 'up');
         expect(player.guess).toBe('up');
-        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue(1100);
+        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue('1100');
         await new Promise(resolve => setTimeout(resolve, 200));
         const result = await gameService.resolveGuess(playerId);
         expect(result.score).toBe(1);
@@ -151,31 +151,31 @@ describe('Game Requirements', () => {
 
     it('should not resolve the the guess if price did not change but 60 seconds pass', async () => {
         vi.stubEnv('GUESS_RESOLVE_SECONDS', '0.1');
-        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue(1000);
+        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue('1000');
         let player = await gameService.initializePlayer(playerId);
         player = await gameService.makeGuess(playerId, 'up');
         expect(player.guess).toBe('up');
-        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue(1000);
+        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue('1000');
         await new Promise(resolve => setTimeout(resolve, 200));
         await expect(gameService.resolveGuess(playerId)).rejects.toThrow(PriceDidNotChangeError);
     });
 
     it('should increase the player\'s score by 1 for a correct guess and decrease by 1 for an incorrect guess', async () => {
-        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue(1000);
+        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue('1000');
         let player = await gameService.initializePlayer(playerId);
         player = await gameService.makeGuess(playerId, 'up');
         expect(player.guess).toBe('up');
-        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue(1100);
+        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue('1100');
         player = await gameService.resolveGuess(playerId);
         expect(player.score).toBe(1);
         player = await gameService.makeGuess(playerId, 'down');
         expect(player.guess).toBe('down');
-        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue(1000);
+        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue('1000');
         player = await gameService.resolveGuess(playerId);
         expect(player.score).toBe(2);
         player = await gameService.makeGuess(playerId, 'up');
         expect(player.guess).toBe('up');
-        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue(900);
+        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue('900');
         player = await gameService.resolveGuess(playerId);
         expect(player.score).toBe(1);
     });
@@ -202,33 +202,37 @@ describe('Game Requirements', () => {
     });
 
     it('should resolve guesses fairly using BTC price data from a 3rd party API', async () => {
-        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue(1000);
+        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue('1000');
         let player = await gameService.initializePlayer(playerId);
         player = await gameService.makeGuess(playerId, 'up');
         expect(player.guess).toBe('up');
-        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue(1100);
+        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue('1100');
         player = await gameService.resolveGuess(playerId);
         expect(player.score).toBe(1);
     });
     it('should score a guess correctly', async () => {
-        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue(1000);
+        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue('1000');
         let player = await gameService.initializePlayer(playerId);
         player = await gameService.makeGuess(playerId, 'up');
         expect(player.guess).toBe('up');
-        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue(1100);
+        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue('1100');
+        player = await gameService.resolveGuess(playerId);
+        expect(player.score).toBe(1);
     });
     it('should score a guess incorrectly', async () => {
-        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue(1000);
+        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue('1000');
         let player = await gameService.initializePlayer(playerId);
         player = await gameService.makeGuess(playerId, 'up');
         expect(player.guess).toBe('up');
-        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue(900);
+        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue('900');
+        player = await gameService.resolveGuess(playerId);
+        expect(player.score).toBe(-1);
     });
     it('should persist the score of each player in a backend data store', async () => {
         let player = await gameService.initializePlayer(playerId);
         player = await gameService.makeGuess(playerId, 'up');
         expect(player.guess).toBe('up');
-        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue(1100);
+        vi.mocked(ApiService.prototype.getBtcPrice).mockResolvedValue('1100');
         player = await gameService.resolveGuess(playerId);
         expect(player.score).toBe(1);
     });

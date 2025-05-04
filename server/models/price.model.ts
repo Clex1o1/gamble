@@ -23,14 +23,14 @@ export class PriceModel {
     static hydrate(obj: {
         id: string;
         price: number;
-        createdAt: number;
-        updatedAt: number;
+        created_at: number;
+        updated_at: number;
     }): Required<PriceModel> {
         return new PriceModel(
             obj.price,
             obj.id,
-            obj.createdAt,
-            obj.updatedAt
+            obj.created_at,
+            obj.updated_at
         ) as Required<PriceModel>;
     }
 
