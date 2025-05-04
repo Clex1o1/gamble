@@ -1,11 +1,10 @@
 // vitest.config.ts
 import { defineConfig } from 'vitest/config'
-
+import path from 'path'
 export default defineConfig({
     test: {
         environment: 'jsdom',
         globals: true,
-        setupFiles: ['./test/setup.ts'],
         // you can optionally set Nuxt-specific environment options
         // environmentOptions: {
         //   nuxt: {
@@ -16,5 +15,10 @@ export default defineConfig({
         //     }
         //   }
         // }
-    }
+    },
+    resolve: {
+        alias: {
+            '~': path.resolve(__dirname, './'),
+        },
+    },
 })

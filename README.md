@@ -92,3 +92,7 @@ There are some options to solve the problem:
 
 1. The Users pulls updates from the server. After each minute or page reload / navigation the users polls the server for updates.
 2. The server runs a cron job which updates the data of all users. (at least per minute) The users receives the updates via the realtime connection. or the initial data load. (on page load / navigation).
+
+## Question
+
+- Is the 60 Time for one player or one round?
