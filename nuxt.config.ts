@@ -24,4 +24,9 @@ export default defineNuxtConfig({
   supabase: {
     redirect: false,
   },
+  runtimeConfig: {
+    public: {
+      GUESS_RESOLVE_SECONDS: process.env.GUESS_RESOLVE_SECONDS ?? '60', // can be overridden by NUXT_GUESS_TIME environment variable
+    }
+  },
 })

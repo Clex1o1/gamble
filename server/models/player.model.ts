@@ -4,19 +4,19 @@ export class PlayerModel {
     public readonly id?: string;
     public readonly score: number;
     public readonly guess: Guess | null;
-    public readonly lastGuessTime: number | null;
+    public readonly lastGuessTime: string | null;
     public readonly lastBtcPriceId: string | null;
-    public readonly createdAt?: number;
-    public readonly updatedAt?: number;
+    public readonly createdAt?: string;
+    public readonly updatedAt?: string;
 
     private constructor(
         score: number,
         guess: Guess | null,
-        lastGuessTime: number | null,
+        lastGuessTime: string | null,
         lastBtcPriceId: string | null,
         id?: string,
-        createdAt?: number,
-        updatedAt?: number,
+        createdAt?: string,
+        updatedAt?: string,
     ) {
         this.id = id;
         this.score = score;
@@ -35,16 +35,16 @@ export class PlayerModel {
         id: string;
         score: number;
         guess: Guess | null;
-        last_guess_time: number | null;
-        last_btc_price_id: string | null;
-        created_at: number;
-        updated_at: number;
+        last_guess_time: string | null;
+        last_price_id: string | null;
+        created_at: string;
+        updated_at: string;
     }): Required<PlayerModel> {
         return new PlayerModel(
             obj.score,
             obj.guess,
             obj.last_guess_time,
-            obj.last_btc_price_id,
+            obj.last_price_id,
             obj.id,
             obj.created_at,
             obj.updated_at
@@ -56,7 +56,7 @@ export class PlayerModel {
         return new PlayerModel(
             this.score,
             guess,
-            Date.now(),
+            new Date().toISOString(),
             lastBtcPriceId,
             this.id,
             this.createdAt,
@@ -94,7 +94,7 @@ export class PlayerModel {
             id: this.id,
             score: this.score,
             guess: this.guess,
-            last_guess_time: this.lastGuessTime,
+            last_guess_time: this.lastGuessTime ? new Date(this.lastGuessTime).toISOString() : null,
             last_price_id: this.lastBtcPriceId,
         };
     }
@@ -109,7 +109,7 @@ export class PlayerModel {
     }
 
 
-    assertHasGuess(): asserts this is this & { guess: Guess, lastGuessTime: number, lastBtcPriceId: string } {
+    assertHasGuess(): asserts this is this & { guess: Guess, lastGuessTime: string, lastBtcPriceId: string } {
         if (
             this.guess === null ||
             this.lastGuessTime === null ||

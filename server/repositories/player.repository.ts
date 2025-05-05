@@ -28,7 +28,9 @@ export class PlayerRepository {
 
     async updatePlayer(player: PlayerModel): Promise<Required<PlayerModel>> {
         const { data, error } = await this.db.from('players').update(player.toEntity()).eq('id', player.id).select().single();
+
         if (error) {
+            console.error(error, player.toEntity());
             throw new Error(error.message);
         }
         const persistedPlayer: PlayerModel = PlayerModel.hydrate(data);

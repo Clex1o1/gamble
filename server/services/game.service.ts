@@ -24,19 +24,18 @@ export class GameService implements IGameService {
         return this.playerService.initializePlayer(playerId);
     }
 
-    async makeGuess(playerId: string, guess: Guess): Promise<PlayerModel> {
+    async makeGuess(playerId: string, guess: Guess): Promise<Required<PlayerModel>> {
         return this.playerService.makeGuess(playerId, guess);
     }
 
 
-    async resolveGuess(playerId: string): Promise<PlayerModel> {
+    async resolveGuess(playerId: string): Promise<Required<PlayerModel>> {
         const player: Required<PlayerModel> = await this.playerService.getPlayer(playerId);
         player.assertHasGuess();
 
-
         if (
             !(player.lastGuessTime !== null &&
-                Date.now() - player.lastGuessTime >= this.guessTime)
+                new Date(player.lastGuessTime).getTime() + this.guessTime <= Date.now())
         ) {
             throw new GuessTimeNotUpError();
         }
@@ -46,7 +45,7 @@ export class GameService implements IGameService {
         if (btcPrice.price === lastBtcPrice.price) {
             throw new PriceDidNotChangeError();
         }
-        const isCorrect = player.guess === 'up' ? btcPrice.price > lastBtcPrice.price : btcPrice.price < lastBtcPrice.price;
+        const isCorrect = player.guess === Guess.UP ? btcPrice.price > lastBtcPrice.price : btcPrice.price < lastBtcPrice.price;
         return this.playerService.resolveGuess(playerId, isCorrect);
     }
 }

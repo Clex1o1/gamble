@@ -1,14 +1,14 @@
 export class PriceModel {
     public readonly id?: string;
     public readonly price: number;
-    public readonly createdAt?: number;
-    public readonly updatedAt?: number;
+    public readonly createdAt?: string;
+    public readonly updatedAt?: string;
 
     private constructor(
         price: number,
         id?: string,
-        createdAt?: number,
-        updatedAt?: number
+        createdAt?: string,
+        updatedAt?: string
     ) {
         this.id = id;
         this.price = price;
@@ -23,8 +23,8 @@ export class PriceModel {
     static hydrate(obj: {
         id: string;
         price: number;
-        created_at: number;
-        updated_at: number;
+        created_at: string;
+        updated_at: string;
     }): Required<PriceModel> {
         return new PriceModel(
             obj.price,
@@ -34,7 +34,7 @@ export class PriceModel {
         ) as Required<PriceModel>;
     }
 
-    dto(): { id?: string; price: number; createdAt?: number; updatedAt?: number } {
+    dto(): { id?: string; price: number; createdAt?: string; updatedAt?: string } {
         return {
             id: this.id,
             price: this.price,
