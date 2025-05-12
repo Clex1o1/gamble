@@ -48,7 +48,9 @@ const animatedPrice = reactive({
 watch(
   () => localScore.value,
   (n) => {
-    gsap.to(animatedScore, { duration: 0.5, score: Number(n) || 0 });
+    if (import.meta.client) {
+      gsap.to(animatedScore, { duration: 0.5, score: Number(n) || 0 });
+    }
   },
   { immediate: true }
 );
@@ -56,7 +58,9 @@ watch(
 watch(
   () => localPrice.value,
   (n) => {
-    gsap.to(animatedPrice, { duration: 0.5, price: Number(n) || 0 });
+    if (import.meta.client) {
+      gsap.to(animatedPrice, { duration: 0.5, price: Number(n) || 0 });
+    }
   },
   { immediate: true }
 );
