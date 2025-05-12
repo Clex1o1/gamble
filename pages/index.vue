@@ -33,7 +33,7 @@
           :score="player.score"
           :guessTime="guessTime"
         />
-        <div v-if="!isLoggedIn">
+        <div v-if="!isLoggedIn" class="max-w-sm">
           <UButton
             @click="startGame"
             :disabled="isLoadingPlayer"
