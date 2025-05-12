@@ -77,7 +77,7 @@ export const useGame = () => {
         pauseInterval();
         resumeInterval();
 
-        lastGuessTime.value = Date.now();
+        lastGuessTime.value = startTime;
         const remainingTime = guessTime - (Date.now() - startTime);
         if (remainingTime > 0) {
             setTimeout(resolveGuessWithRetry, remainingTime);
