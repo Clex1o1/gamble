@@ -23,7 +23,7 @@
     <UContainer
       class="flex flex-col gap-4 p-4 flex-1 h-full md:grid md:grid-cols-2"
     >
-      <div class="flex flex-col gap-8">
+      <div class="flex flex-col gap-8 justify-center">
         <GameStats
           class="hidden md:flex"
           :is-visible="

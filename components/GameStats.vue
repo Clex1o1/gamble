@@ -1,5 +1,5 @@
 <template>
-  <div class="game-stats gap-4 flex flex-col items-center md:pt-20 md:max-w-sm">
+  <div class="game-stats gap-4 flex flex-col items-center md:max-w-sm">
     <div class="grid grid-cols-2 gap-4 w-full">
       <span class="text-2xl"> Price: </span>
       <div class="relative flex justify-end h-8">
