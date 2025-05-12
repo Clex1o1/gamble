@@ -3,7 +3,7 @@ import type { Player } from "~/server/types";
 import { Guess } from "~/server/types";
 
 export const usePlayer = () => {
-    const player = useState<Player>("player", () => ({
+    const player = useState<Player & { isLoggedIn: boolean }>("player", () => ({
         id: undefined,
         createdAt: undefined,
         updatedAt: undefined,
@@ -11,7 +11,9 @@ export const usePlayer = () => {
         guess: null,
         lastGuessTime: null,
         lastBtcPriceId: null,
+        isLoggedIn: false,
     }));
+    const user = useSupabaseUser();
 
     const loading = ref(false);
     const error = ref<Error | null>(null);
@@ -21,11 +23,14 @@ export const usePlayer = () => {
     async function loadPlayer() {
         loading.value = true;
         error.value = null;
-
+        if (!user.value) {
+            player.value.isLoggedIn = false;
+            return null;
+        }
         try {
             const response = await $fetch<Player>("/api/player/player");
             if (response) {
-                player.value = response;
+                player.value = { ...response, isLoggedIn: true };
             }
             return response;
         } catch (err) {
@@ -52,7 +57,7 @@ export const usePlayer = () => {
                 body: data
             });
             if (response) {
-                player.value = response;
+                player.value = { ...response, isLoggedIn: true };
             }
             return response;
         } catch (err) {
@@ -79,7 +84,7 @@ export const usePlayer = () => {
                 body: { guess }
             });
             if (response) {
-                player.value = response;
+                player.value = { ...response, isLoggedIn: true };
             }
             return response;
         } catch (err) {

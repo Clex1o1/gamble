@@ -23,17 +23,27 @@
     <UContainer
       class="flex flex-col gap-4 p-4 flex-1 h-full md:grid md:grid-cols-2"
     >
-      <ErrorDisplay v-if="error" :error="error" />
-      <GameStats
-        class="hidden md:flex"
-        :is-visible="
-          !!!player.lastGuessTime &&
-          (gameState === 'idle' || gameState === 'finished')
-        "
-        :price="price?.price ?? 0"
-        :score="player.score"
-        :guessTime="guessTime"
-      />
+      <div class="flex flex-col gap-8">
+        <GameStats
+          class="hidden md:flex"
+          :is-visible="
+            !!!player.lastGuessTime &&
+            (gameState === 'idle' || gameState === 'finished')
+          "
+          :price="price?.price ?? 0"
+          :score="player.score"
+          :guessTime="guessTime"
+        />
+        <div v-if="!isLoggedIn">
+          <UButton
+            @click="startGame"
+            :disabled="isLoadingPlayer"
+            :loading="isLoadingPlayer"
+            class="rounded-full w-full place-content-center text-xl font-bold text-white"
+            >Start Game</UButton
+          >
+        </div>
+      </div>
       <transition :name="slideAnimation" mode="out-in" class="md:hidden">
         <GameStats
           v-if="
@@ -48,14 +58,13 @@
           :score="player.score"
           :guessTime="guessTime"
         />
-
         <div
           v-else-if="gameState === 'running'"
           class="grid gap-4 place-content-center"
         >
           <GameControls
             v-if="player"
-            :disabled="!!player.lastGuessTime"
+            :disabled="!!player.lastGuessTime || !isLoggedIn"
             :progress="progress.value"
             :status="progress.status"
             @up="gamble(Guess.UP)"
@@ -63,10 +72,11 @@
           />
         </div>
       </transition>
+
       <div class="hidden md:grid gap-4 place-content-center">
         <GameControls
           v-if="player"
-          :disabled="!!player.lastGuessTime"
+          :disabled="!!player.lastGuessTime || !isLoggedIn"
           :progress="progress.value"
           :status="progress.status"
           @up="gamble(Guess.UP)"
@@ -75,14 +85,7 @@
       </div>
       <div class="grid gap-4 mt-auto md:hidden">
         <transition name="slideUpDown" mode="out-in">
-          <div v-if="!player">
-            <UButton
-              @click="startGame"
-              class="rounded-full w-full place-content-center text-xl font-bold text-white"
-              >Start Game</UButton
-            >
-          </div>
-          <div v-else-if="gameState === 'idle' || gameState === 'finished'">
+          <div v-if="gameState === 'idle' || gameState === 'finished'">
             <UButton
               @click="startRound"
               class="rounded-full w-full place-content-center text-xl font-bold text-white"
@@ -115,18 +118,31 @@ const {
   gameState,
 } = useGame();
 
+const isLoadingPlayer = ref(false);
+
+const isLoggedIn = computed(() => player.value.isLoggedIn);
+
 const slideAnimation = ref("slide-left");
 
 async function startGame() {
   if (!user.value) {
+    isLoadingPlayer.value = true;
     const { data, error } = await supabase.auth.signInAnonymously();
+    await loadPlayer();
     if (error) {
       toast.add({
         title: "Error",
         description: error.message,
         color: "error",
       });
+    } else {
+      toast.add({
+        title: "Success",
+        description: "Ready to play!",
+        color: "success",
+      });
     }
+    isLoadingPlayer.value = false;
   }
 }
 
