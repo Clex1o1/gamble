@@ -74,9 +74,24 @@ bun run preview
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
 
----
+## ENVS
 
-# Process
+Copy .env.example to .env and set the variables.
+
+```bash
+cp .env.example .env
+```
+
+```
+SUPABASE_URL="" # Supabase project url
+SUPABASE_KEY="" # Supabase anon key
+SUPABASE_SERVICE_KEY="" # Supabase service key
+GUESS_RESOLVE_SECONDS=3 # Time in seconds to resolve the guess
+```
+
+## Process
+
+## Process
 
 ## Tools
 
