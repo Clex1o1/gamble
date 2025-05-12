@@ -131,3 +131,9 @@ There are some options to solve the problem:
 - add migrations
 - rate limting external api
 - login
+
+---
+
+# Services
+
+The project is deployed on Vercel. The database is Supabase.
