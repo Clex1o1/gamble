@@ -23,9 +23,8 @@
     <UContainer
       class="flex flex-col gap-4 p-4 flex-1 h-full md:grid md:grid-cols-2"
     >
-      <div class="flex flex-col gap-8 justify-center">
+      <div class="flex-col gap-8 justify-center hidden md:flex">
         <GameStats
-          class="hidden md:flex"
           :is-visible="
             !!!player.lastGuessTime &&
             (gameState === 'idle' || gameState === 'finished')
@@ -72,7 +71,6 @@
           />
         </div>
       </transition>
-
       <div class="hidden md:grid gap-4 place-content-center">
         <GameControls
           v-if="player"
@@ -85,7 +83,20 @@
       </div>
       <div class="grid gap-4 mt-auto md:hidden">
         <transition name="slideUpDown" mode="out-in">
-          <div v-if="gameState === 'idle' || gameState === 'finished'">
+          <div v-if="!isLoggedIn" class="md:hidden">
+            <UButton
+              @click="startGame"
+              :disabled="isLoadingPlayer"
+              :loading="isLoadingPlayer"
+              class="rounded-full w-full place-content-center text-xl font-bold text-white"
+              >Start Game</UButton
+            >
+          </div>
+          <div
+            v-else-if="
+              (gameState === 'idle' || gameState === 'finished') && isLoggedIn
+            "
+          >
             <UButton
               @click="startRound"
               class="rounded-full w-full place-content-center text-xl font-bold text-white"
